@@ -1,0 +1,675 @@
+{
+  "name": "LinkedIn Content Creator",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# 3) LinkedIn Content Creator Workflow\n",
+        "height": 80,
+        "width": 660,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        208,
+        96
+      ],
+      "id": "925dc3a0-2ec2-4b6a-ad3e-6907f0e6309a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y",
+          "mode": "list",
+          "cachedResultName": "Linkedin Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -48,
+        224
+      ],
+      "id": "1f5d1f24-5edf-4fc0-88bf-baa1e2988ade",
+      "name": "Get Topic",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cVYfCblV8GJysQDk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearertvly-dev-4HmYPq-kbdnH3MDVqwrsID9B63WBMBUQ75hFu6zIWsy8tdbFi"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"Search the web for {{ $json.Topic }}\",\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 3,\n  \"time_range\": null,\n  \"days\": 7,\n  \"include_answer\": true,\n  \"include_raw_content\": false,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_domains\": [],\n  \"exclude_domains\": []\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        192,
+        224
+      ],
+      "id": "0545c797-0e67-4970-b14b-08a7a9da962d",
+      "name": "Tavily"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y",
+          "mode": "list",
+          "cachedResultName": "Linkedin Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic": "={{ $('Get Topic').item.json.Topic }}",
+            "Content": "={{ $('Content Creator').item.json.output }}",
+            "Status": "Created",
+            "Image URL": "={{ $('Upload file').item.json.webViewLink }}"
+          },
+          "matchingColumns": [
+            "Topic"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Image URL",
+              "displayName": "Image URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1168,
+        224
+      ],
+      "id": "098fefe5-d4fc-45c9-99fe-0d0ec4943869",
+      "name": "Send Content",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cVYfCblV8GJysQDk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Article 1: {{ $json.results[0].content }}\nArticle 2: {{ $json.results[1].content }}\nArticle 3: {{ $json.results[2].content }}",
+        "options": {
+          "systemMessage": "=# Overview  \nYou are an AI agent responsible for generating a concise, inspiring LinkedIn post targeted at entrepreneurs, based on the content of three given articles.  \n\n## Context  \n- The agent receives 3 articles on a related topic.  \n- The goal is to synthesize the key ideas into a short, professional LinkedIn post.  \n- The tone should be motivational, forward-thinking, and relevant to the entrepreneurial mindset.  \n- Posts should be optimized for engagement using relevant hashtags and light use of emojis.  \n\n## Instructions  \n1. Read and extract the core themes, trends, or insights from all three articles.  \n2. Identify any common threads or overarching message.  \n3. Write a LinkedIn post (max 700 characters) that blends the main insights into a unified, inspiring message.  \n4. Use 2–4 relevant hashtags that align with the post topic and entrepreneur interests.  \n5. Add 1–3 tasteful emojis to increase engagement without reducing professionalism.  \n6. Do not quote or directly reference article sources. Focus on synthesizing ideas.  \n\n\n## Examples  \n- Input: 3 articles on AI in startups, bootstrapping, and the rise of solopreneurs.  \n- Output:  \n  \"From AI copilots to lean bootstrapping, the age of the solopreneur is now. 🚀  \n  Entrepreneurs are rewriting the rules—scaling smarter, faster, and with less.  \n  Embrace the shift. The tools are here. The future is solo-powered.  \n  #Entrepreneurship #AI #Bootstrapping #FutureOfWork\"\n\n## SOP (Standard Operating Procedure)  \n1. Receive the 3 articles and briefly scan each to extract top insights.  \n2. Group overlapping ideas into 1–2 core messages.  \n3. Draft a LinkedIn post with a motivating tone, keeping under the character limit.  \n4. Add emojis and hashtags appropriately.  \n5. Review for clarity, grammar, and impact.  \n\n## Final Notes  \n- Posts must always be original and never copy from the source articles.  \n- Avoid technical jargon or overly niche terms—keep it accessible.  \n- Prioritize clarity, brevity, and emotional resonance.  \n---\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        416,
+        224
+      ],
+      "id": "156bce5b-9cc0-4f01-8121-66551ae724e6",
+      "name": "Content Creator"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        416,
+        400
+      ],
+      "id": "d2bcd86a-e231-4297-9fbf-37c914dd57c4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wEuyiosiVcfuBheO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        224
+      ],
+      "id": "279f891e-aa98-49de-9501-f7d0dc503499",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "=https://picsum.photos/1200/628",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        720,
+        224
+      ],
+      "id": "eba12ec9-c705-4399-b4b8-b1c20062c693",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Get Topic').item.json.Topic }}.jpg",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1eX_F-u-KP-I660BZQI3W3sjnPPZp5JgV",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Posts",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1eX_F-u-KP-I660BZQI3W3sjnPPZp5JgV"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        928,
+        224
+      ],
+      "id": "e9622b8b-4ea4-48f8-b3e6-598f1a5e82a9",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Xt1Kko9wW5mJH9W2",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Auto-fill Topic",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -368,
+        624
+      ],
+      "typeVersion": 1,
+      "id": "67d31089-2a2e-4572-b435-deee48a073d5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        608
+      ],
+      "id": "fde04db3-0ec9-46b9-89ad-eae1794a1fdf",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"trending entrepreneurship topics this week\",\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"max_results\": 5,\n  \"include_answer\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        272,
+        608
+      ],
+      "id": "633c7241-5117-4f17-9943-a28d21236460",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = $input.first().json.results;\n\nconst topics = results.map(result => {\n  return {\n    json: {\n      Topic: result.title,\n      Status: \"To Do\",\n      Content: \"\",\n      Image_URL: \"\"\n    }\n  };\n});\n\nreturn topics;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        608
+      ],
+      "id": "ca686dd1-8fef-4c93-bb4f-aeb120acf730",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y",
+          "mode": "list",
+          "cachedResultName": "Linkedin Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic": "={{ $json.Topic }}",
+            "Status": "={{ $json.Status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Image_URL",
+              "displayName": "Image_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        608
+      ],
+      "id": "bd162994-70e7-45eb-aab4-f76a9941c2d9",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cVYfCblV8GJysQDk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y",
+          "mode": "list",
+          "cachedResultName": "Linkedin Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1766437003,
+          "mode": "list",
+          "cachedResultName": "Calendar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dvyHmsPB7YxuVo6Dq-I1cXl6iRtMd0Dqkw17Vw9f40Y/edit#gid=1766437003"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic": "={{ $json.Topic }}",
+            "Date_Generated": "={{ $now.toFormat('yyyy-MM-dd') }}",
+            "Character_Count": "={{ $('Content Creator').item.json.output.length }}",
+            "Status": "Created"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date_Generated",
+              "displayName": "Date_Generated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Character_Count",
+              "displayName": "Character_Count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1376,
+        224
+      ],
+      "id": "0b2869bc-be77-44ee-aa25-21e0b25988e3",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cVYfCblV8GJysQDk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Topic": {
+      "main": [
+        [
+          {
+            "node": "Tavily",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily": {
+      "main": [
+        [
+          {
+            "node": "Content Creator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Creator": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Creator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Send Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Send Content": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3bea0818-3e4c-4f34-b248-ba6172bd497c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b06e1c5a715975948518b1ef0a5df206ed61ebd589dd4a97619bb9edc3b4bca3"
+  },
+  "id": "hS5cq9r9DYRJ3XET",
+  "tags": []
+}
