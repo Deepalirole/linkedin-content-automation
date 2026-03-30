@@ -91,30 +91,10 @@ Update Content Calendar
 
 ## 📸 Workflow Screenshot
 
-```<img width="1742" height="772" alt="Screenshot 2026-03-20 202447" src="https://github.com/user-attachments/assets/2deebf9a-87f3-491b-a653-5e66813673c0" />
+<img width="1742" height="772" alt="Screenshot 2026-03-20 202447" src="https://github.com/user-attachments/assets/2deebf9a-87f3-491b-a653-5e66813673c0" />
 
 
----
 
-## Step 6: Upload Files to GitHub
 
-1. Click **"Add file"** → **"Upload files"**
-2. Create a `workflows` folder → upload both `.json` files
-3. Create an `assets` folder → upload your workflow screenshot
-4. Click **"Commit changes"**
 
----
-
-## Step 7: Add Topics to Make It Stand Out
-
-Go to your repo → click **"Topics"** → add:
-```
-n8n automation ai linkedin gemini 
-workflow no-code generative-ai tavily
-```
-
----
-
-## Your GitHub repo link will look like:
-```
 github.com/YOUR-USERNAME/linkedin-content-automation
